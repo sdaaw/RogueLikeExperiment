@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MenuItem : MonoBehaviour
@@ -22,8 +23,15 @@ public class MenuItem : MonoBehaviour
     public InventoryManager inventoryManager;
     private float toolTipOffsetX, toolTipOffsetY;
 
+    public bool isDragging;
+    private Vector3 _oldPos;
+
+    private RectTransform _rtransform;
+
     void Start()
     {
+        _rtransform = GetComponent<RectTransform>();
+        _oldPos = _rtransform.position;
         toolTipOffsetX = 160;
         toolTipOffsetY = -70;
         _canvas = FindFirstObjectByType<Canvas>(); //
@@ -32,7 +40,7 @@ public class MenuItem : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(_toolTipTransform != null) 
+        if(_toolTipTransform != null && !isDragging) 
         {
             Vector3 mPos = Input.mousePosition;
             mPos = new Vector3(mPos.x + toolTipOffsetX, mPos.y + toolTipOffsetY, 0); //magic numbers, also if the tooltip appears in front of the mouse, it will flicker due to stopping the hover event on the actual item.
@@ -65,6 +73,22 @@ public class MenuItem : MonoBehaviour
     }
     public void OnClick()
     {
+        if (isDragging) return;
         inventoryManager.SelectItem(this);
+    }
+
+    public void OnDrag()
+    {
+        print("dragging");
+        //transform.SetParent(null);
+        isDragging = true;
+        Vector3 mPos = Input.mousePosition;
+        //mPos = new Vector3(mPos.x + toolTipOffsetX, mPos.y + toolTipOffsetY, 0); //magic numbers, also if the tooltip appears in front of the mouse, it will flicker due to stopping the hover event on the actual item.
+        _rtransform.position = mPos;
+    }
+    public void OnStopDrag()
+    {
+        isDragging = false;
+        _rtransform.position = _oldPos;
     }
 }

@@ -7,18 +7,8 @@ public class Item
     public List<Stat> Stats = new();
 
     public string ItemName { get; set; }
-
     public string Description { get; set; }
-    public Item(bool rollRandomStats = false, int statCount = 3) 
-    {
-        Random r = new();
-        ItemName = Constants.ADJECTIVES[r.Next(0, Constants.ADJECTIVES.Length)] + " " + Constants.ITEMNAMES[r.Next(0, Constants.ITEMNAMES.Length)];
-        if(rollRandomStats)
-        {
-            RollRandomStats(statCount);
-        }
-    }
-    private void RollRandomStats(int count)
+    public void RollRandomStats(int count)
     {
         Random r = new();
         for (int i = 0; i < count; i++) 

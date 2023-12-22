@@ -16,6 +16,7 @@ public class InventoryManager : MonoBehaviour
 
     private MenuItem _selectedItem;
 
+    public float menuItemGap;
 
     // Start is called before the first frame update
     void Start()
@@ -46,8 +47,10 @@ public class InventoryManager : MonoBehaviour
             RectTransform rt;
             for(int i = 0; i < menuItems.Count; i++) 
             {
+                if (menuItems[i].GetComponent<MenuItem>().isDragging) return;
+
                 rt = menuItems[i].GetComponent<RectTransform>();
-                float yPos = 0 + i * 20;
+                float yPos = i * menuItemPrefab.GetComponent<RectTransform>().sizeDelta.y * menuItemGap;
                 rt.localPosition = new Vector3(0, -yPos, 0);
             }
         }
@@ -56,10 +59,12 @@ public class InventoryManager : MonoBehaviour
     public void GenerateRandomItems()
     {
         _testInv = new();
-        Item item;
+        Item item = new();
         for (int i = 0; i < 50; i++)
         {
-            item = new(true);
+            item = new();
+            item.ItemName = Constants.ADJECTIVES[Random.Range(0, Constants.ADJECTIVES.Length)] + " " + Constants.ITEMNAMES[Random.Range(0, Constants.ITEMNAMES.Length)];
+            item.RollRandomStats(3);
             _testInv.items.Add(item);
         }
         LoadInventory();
@@ -80,6 +85,7 @@ public class InventoryManager : MonoBehaviour
 
             _selectedItem.gameObject.GetComponent<Image>().color /= 2;
             _selectedItem = null;
+            ToggleControls();
         }
     }
 
@@ -87,7 +93,11 @@ public class InventoryManager : MonoBehaviour
     {
         if(_selectedItem != null)
         {
+            //set old selected item back to normal color
             _selectedItem.gameObject.GetComponent<Image>().color /= 2;
+        } else
+        {
+            ToggleControls();
         }
         _selectedItem = item;
         _selectedItem.gameObject.GetComponent<Image>().color *= 2;
@@ -96,6 +106,8 @@ public class InventoryManager : MonoBehaviour
     public void ToggleControls()
     {
         //toggles the actions for the item as it is selected
+
+        //itemControlsPanel.SetActive(!itemControlsPanel.activeSelf);
 
     }
 

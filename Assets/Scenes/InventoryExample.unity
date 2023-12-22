@@ -662,7 +662,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InventoryViewport: {fileID: 1588915775}
   menuItemPrefab: {fileID: 8236963032008751077, guid: 94c0ece9485a762489abe6c1cc5f7a31, type: 3}
+  itemControlsPanel: {fileID: 2059816595}
   menuItems: []
+  menuItemGap: 1
 --- !u!4 &1333943926
 Transform:
   m_ObjectHideFlags: 0
