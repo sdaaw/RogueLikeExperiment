@@ -1,0 +1,71 @@
+using System.Collections;
+using System.Collections.Generic;
+
+public static class Constants 
+{
+    public static readonly string[] ADJECTIVES = {
+        "Dynamic",
+        "Sleek",
+        "Vibrant",
+        "Mystical",
+        "Radiant",
+        "Epic",
+        "Luminous",
+        "Spirited",
+        "Innovative",
+        "Futuristic",
+        "Enchanting",
+        "Zen",
+        "Harmonious",
+        "Quirky",
+        "Whimsical",
+        "Glamorous",
+        "Ethereal",
+        "Energetic",
+        "Dazzling",
+        "Effervescent",
+        "Nebulous",
+        "Serendipitous",
+        "Halcyon",
+        "Aurora",
+        "Mellifluous",
+        "Quixotic",
+        "Resplendent",
+        "Ephemeral",
+        "Peregrine",
+        "Effulgent",
+        "Incandescent",
+        "Munificent",
+        "Sagacious",
+        "Umbra",
+        "Surreptitious",
+        "Selenic",
+        "Pulchritudinous",
+        "Cynosure",
+        "Ebullient",
+        "Labyrinthine"
+    };
+    public static readonly string[] ITEMNAMES = {
+        "Celestial Blade",
+        "Chrono Gauntlets",
+        "Lunar Shroud",
+        "Aetherial Compass",
+        "Nebula Goggles",
+        "Stellar Beacon",
+        "Eclipse Dagger",
+        "Pandora's Scepter",
+        "Quantum Helm",
+        "Tempest Talons",
+        "Astral Amulet",
+        "Zephyr Bow",
+        "Galactic Locket",
+        "Harmony Harp",
+        "Solstice Cloak",
+        "Ethereal Lantern",
+        "Nova Charger",
+        "Spectre Shield",
+        "Vortex Saber",
+        "Arcane Charm"
+    };
+    // Start is called before the first frame update
+}
