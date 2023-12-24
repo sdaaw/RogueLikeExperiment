@@ -6,17 +6,15 @@ using UnityEngine.UI;
 public class InventoryManager : MonoBehaviour
 {
 
-    public GameObject InventoryViewport;
-    public GameObject menuItemPrefab;
-    public GameObject itemControlsPanel;
+    public Canvas canvas;
 
     private Inventory _testInv;
 
     public List<GameObject> menuItems = new List<GameObject>();
 
-    private MenuItem _selectedItem;
 
-    public float menuItemGap;
+    [SerializeField]
+    private float menuItemGap;
 
     // Start is called before the first frame update
     void Start()
@@ -25,15 +23,18 @@ public class InventoryManager : MonoBehaviour
     }
     public void LoadInventory()
     {
+        //set up and build the items for the UI
+
         MenuItem m;
         GameObject a;
-        foreach (Item item in _testInv.items) 
+        foreach (Item item in _currentInventory.items) 
         {
-            a = Instantiate(menuItemPrefab);
+            a = Instantiate(MenuItemPrefab);
             m = a.GetComponent<MenuItem>();
             m.item = item;
             m.menuItemText.text = item.ItemName;
             m.inventoryManager = this;
+            m.canvas = canvas;
 
             a.transform.SetParent(InventoryViewport.transform, false);
             menuItems.Add(a);
@@ -42,7 +43,7 @@ public class InventoryManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(_testInv != null)
+        if(_currentInventory != null)
         {
             RectTransform rt;
             for(int i = 0; i < menuItems.Count; i++) 
@@ -50,22 +51,22 @@ public class InventoryManager : MonoBehaviour
                 if (menuItems[i].GetComponent<MenuItem>().isDragging) return;
 
                 rt = menuItems[i].GetComponent<RectTransform>();
-                float yPos = i * menuItemPrefab.GetComponent<RectTransform>().sizeDelta.y * menuItemGap;
-                rt.localPosition = new Vector3(0, -yPos, 0);
+                float yPos = i * MenuItemPrefab.GetComponent<RectTransform>().sizeDelta.y * menuItemGap;
+                rt.localPosition = new Vector3(0, -yPos, 0); //list goes downwards so its negative
             }
         }
     }
 
     public void GenerateRandomItems()
     {
-        _testInv = new();
+        _currentInventory = new();
         Item item = new();
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++) 
         {
             item = new();
             item.ItemName = Constants.ADJECTIVES[Random.Range(0, Constants.ADJECTIVES.Length)] + " " + Constants.ITEMNAMES[Random.Range(0, Constants.ITEMNAMES.Length)];
             item.RollRandomStats(3);
-            _testInv.items.Add(item);
+            _currentInventory.items.Add(item);
         }
         LoadInventory();
     }
@@ -73,9 +74,9 @@ public class InventoryManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.B))
         {
-            ToggleInventory(_testInv);
+            ToggleInventory();
         }
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             GenerateRandomItems();
         }
@@ -85,8 +86,12 @@ public class InventoryManager : MonoBehaviour
 
             _selectedItem.gameObject.GetComponent<Image>().color /= 2;
             _selectedItem = null;
-            ToggleControls();
         }
+    }
+
+    public void ToggleInventory()
+    {
+
     }
 
     public void SelectItem(MenuItem item)
@@ -95,25 +100,8 @@ public class InventoryManager : MonoBehaviour
         {
             //set old selected item back to normal color
             _selectedItem.gameObject.GetComponent<Image>().color /= 2;
-        } else
-        {
-            ToggleControls();
         }
         _selectedItem = item;
         _selectedItem.gameObject.GetComponent<Image>().color *= 2;
-    }
-
-    public void ToggleControls()
-    {
-        //toggles the actions for the item as it is selected
-
-        //itemControlsPanel.SetActive(!itemControlsPanel.activeSelf);
-
-    }
-
-
-    public void ToggleInventory(Inventory inv)
-    {
-        
     }
 }

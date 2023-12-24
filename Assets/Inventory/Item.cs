@@ -13,7 +13,8 @@ public class Item
         Random r = new();
         for (int i = 0; i < count; i++) 
         {
-            Stat.StatType[] types = (Stat.StatType[])Enum.GetValues(typeof(Stat.StatType));
+            //get random type from all the stat types and assign it a random value and getting the corresponding name and description for said stat type
+            Stat.StatType[] types = (Stat.StatType[])Enum.GetValues(typeof(Stat.StatType)); 
             Stat stat = new();
             int roll = r.Next(1, types.Length);
             stat.statType = types[roll];

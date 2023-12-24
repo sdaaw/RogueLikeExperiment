@@ -21,6 +21,8 @@ public class Stat
     public string Name { get; set; }
     public string Description { get; set; }
     public float StatValue { get; set; }
+
+    //this feels ugly, unless you want to load items from a seperate asset(json or sql or w/e), I dont know how else to implement this.
     public Tuple<string, string> GetStatAndDescription(Stat stat)
     {
         switch (stat.statType)

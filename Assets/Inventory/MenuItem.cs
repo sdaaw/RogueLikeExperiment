@@ -18,23 +18,19 @@ public class MenuItem : MonoBehaviour
     private GameObject _activeTooltip;
     private RectTransform _toolTipTransform;
 
-    private Canvas _canvas;
+    public Canvas canvas;
 
     public InventoryManager inventoryManager;
+
     private float toolTipOffsetX, toolTipOffsetY;
 
     public bool isDragging;
-    private Vector3 _oldPos;
 
     private RectTransform _rtransform;
 
     void Start()
     {
         _rtransform = GetComponent<RectTransform>();
-        _oldPos = _rtransform.position;
-        toolTipOffsetX = 160;
-        toolTipOffsetY = -70;
-        _canvas = FindFirstObjectByType<Canvas>(); //
     }
 
     // Update is called once per frame
@@ -43,14 +39,15 @@ public class MenuItem : MonoBehaviour
         if(_toolTipTransform != null && !isDragging) 
         {
             Vector3 mPos = Input.mousePosition;
-            mPos = new Vector3(mPos.x + toolTipOffsetX, mPos.y + toolTipOffsetY, 0); //magic numbers, also if the tooltip appears in front of the mouse, it will flicker due to stopping the hover event on the actual item.
+            mPos = new Vector3(mPos.x + toolTipOffsetX, mPos.y + toolTipOffsetY, 0);
+            //RectTransformUtility.ScreenPointToLocalPointInRectangle(_rtransform, mPos, Camera.main, out Vector2 pos);
             _toolTipTransform.position = mPos;
         }
     }
 
     public void OnHover()
     {
-        if(_toolTipTransform != null)
+        if(_toolTipTransform != null || _activeTooltip.activeSelf) //if item has its tooltip already instantiated, set it active and return, or if it already is active.
         {
             _activeTooltip.SetActive(true);
             return;
@@ -60,11 +57,22 @@ public class MenuItem : MonoBehaviour
         //this feels nice too, until you have 34059345 items ofc.
         _activeTooltip = Instantiate(toolTipObject);
         _toolTipTransform = _activeTooltip.GetComponent<RectTransform>();
-        _toolTipTransform.SetParent(_canvas.transform, false);
+        _toolTipTransform.SetParent(canvas.transform, false);
+
+        if(_toolTipTransform.sizeDelta.x != 0 || _toolTipTransform.sizeDelta.y != 0) //prevent Unity from crashing 
+        {
+            toolTipOffsetX = _toolTipTransform.sizeDelta.x / 2;
+            toolTipOffsetY = _toolTipTransform.sizeDelta.y / 2;
+        }
+        //to prevent the mouse from entering on top of the tooltip, blocking the hover event by unity event system, causing flickering
+        toolTipOffsetX += 1;
+        toolTipOffsetY += 1;
+
+        //build contents of the tooltip and set the position it on mouse
         string displayText = item.ItemName + "\n" + item.Description;
         _toolTipTransform.GetComponent<MenuTooltip>().TooltipText.text = displayText;
         Vector3 mPos = Input.mousePosition;
-        mPos = new Vector3(mPos.x + toolTipOffsetX, mPos.y + toolTipOffsetY, -1);
+        mPos = new Vector3(mPos.x + toolTipOffsetX, mPos.y + toolTipOffsetY, 0);
         _toolTipTransform.position = mPos;
     }
     public void OnStopHover()
@@ -75,20 +83,5 @@ public class MenuItem : MonoBehaviour
     {
         if (isDragging) return;
         inventoryManager.SelectItem(this);
-    }
-
-    public void OnDrag()
-    {
-        print("dragging");
-        //transform.SetParent(null);
-        isDragging = true;
-        Vector3 mPos = Input.mousePosition;
-        //mPos = new Vector3(mPos.x + toolTipOffsetX, mPos.y + toolTipOffsetY, 0); //magic numbers, also if the tooltip appears in front of the mouse, it will flicker due to stopping the hover event on the actual item.
-        _rtransform.position = mPos;
-    }
-    public void OnStopDrag()
-    {
-        isDragging = false;
-        _rtransform.position = _oldPos;
     }
 }
