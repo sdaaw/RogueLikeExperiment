@@ -8,7 +8,11 @@ public class InventoryManager : MonoBehaviour
 
     public Canvas canvas;
 
-    private Inventory _testInv;
+    [SerializeField]
+    private GameObject InventoryPrefab, InventoryViewport, MenuItemPrefab;
+
+    private Inventory _currentInventory;
+    private MenuItem _selectedItem;
 
     public List<GameObject> menuItems = new List<GameObject>();
 
