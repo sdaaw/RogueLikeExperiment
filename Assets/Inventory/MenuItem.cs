@@ -11,11 +11,14 @@ public class MenuItem : MonoBehaviour
 
 
     public Item item;
-    public GameObject toolTipObject;
+    [SerializeField]
+    private GameObject toolTipObject;
 
     public TMP_Text menuItemText;
 
-    private GameObject _activeTooltip;
+
+    public GameObject activeTooltip;
+
     private RectTransform _toolTipTransform;
 
     public Canvas canvas;
@@ -27,6 +30,8 @@ public class MenuItem : MonoBehaviour
     public bool isDragging;
 
     private RectTransform _rtransform;
+
+    public Image itemImage;
 
     void Start()
     {
@@ -47,23 +52,26 @@ public class MenuItem : MonoBehaviour
 
     public void OnHover()
     {
-        if(_toolTipTransform != null || _activeTooltip.activeSelf) //if item has its tooltip already instantiated, set it active and return, or if it already is active.
+        if(_toolTipTransform != null) //if item has its tooltip already instantiated, set it active and return, or if it already is active.
         {
-            _activeTooltip.SetActive(true);
+            activeTooltip.SetActive(true);
             return;
         }
         //either edit a single tooltip object or instantiate a different tooltip for each item in the menu
         //cpu vs memory? idk, which one is more expensive, setting gameobject active or editing text in an object
         //this feels nice too, until you have 34059345 items ofc.
-        _activeTooltip = Instantiate(toolTipObject);
-        _toolTipTransform = _activeTooltip.GetComponent<RectTransform>();
+        activeTooltip = Instantiate(toolTipObject);
+        _toolTipTransform = activeTooltip.GetComponent<RectTransform>();
         _toolTipTransform.SetParent(canvas.transform, false);
+
 
         if(_toolTipTransform.sizeDelta.x != 0 || _toolTipTransform.sizeDelta.y != 0) //prevent Unity from crashing 
         {
             toolTipOffsetX = _toolTipTransform.sizeDelta.x / 2;
             toolTipOffsetY = _toolTipTransform.sizeDelta.y / 2;
         }
+
+
         //to prevent the mouse from entering on top of the tooltip, blocking the hover event by unity event system, causing flickering
         toolTipOffsetX += 1;
         toolTipOffsetY += 1;
@@ -77,7 +85,7 @@ public class MenuItem : MonoBehaviour
     }
     public void OnStopHover()
     {
-        _activeTooltip.SetActive(false);
+        activeTooltip.SetActive(false);
     }
     public void OnClick()
     {

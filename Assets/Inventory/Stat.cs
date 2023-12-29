@@ -17,49 +17,90 @@ public class Stat
         cooldownReduction
     }
 
-    public StatType statType;
+    private record StatDescriptions
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+
+    public StatType Type { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public float StatValue { get; set; }
 
+    private StatDescriptions _statDescriptions = new();
+
     //this feels ugly, unless you want to load items from a seperate asset(json or sql or w/e), I dont know how else to implement this.
-    public Tuple<string, string> GetStatAndDescription(Stat stat)
+
+    public static Stat CreateStat(Random random)
     {
-        switch (stat.statType)
+        Stat stat = new Stat();
+        StatType[] types = (StatType[])Enum.GetValues(typeof(StatType));
+        int roll = random.Next(1, types.Length);
+        stat.Type = types[roll];
+        stat.StatValue = random.Next(1, 100);
+
+        // Fill Name & Description
+        StatDescriptions desc = stat.GetStatAndDescription();
+        stat.Name = desc.Name;
+        stat.Description = desc.Description;
+        return stat;
+    }
+ 
+    private StatDescriptions GetStatAndDescription()
+    {
+        StatDescriptions descriptions = new StatDescriptions();
+        switch (Type)
         {
             case StatType.critChance:
             {
-                return Tuple.Create("Critical Chance", "Probability of landing a critical hit."); ;
+                descriptions.Name = "Critical Chance";
+                descriptions.Description = "Probability of landing a critical hit.";
+                return descriptions;
             }
             case StatType.critDamageMultiplier:
             {
-                return Tuple.Create("Crit Damage Multiplier", "Factor by which damage is multiplied on a critical hit."); ;
+                descriptions.Name = "Crit Damage Multiplier";
+                descriptions.Description = "Factor by which damage is multiplied on a critical hit.";
+                return descriptions;
             }
             case StatType.attackSpeed:
             {
-                return Tuple.Create("Attack Speed", "Speed at which attacks are performed."); ;
+                descriptions.Name = "Attack Speed";
+                descriptions.Description = "Speed at which attacks are performed.";
+                return descriptions;
             }
             case StatType.health:
             {
-                return Tuple.Create("Health", "Adds to your total health."); ;
+                descriptions.Name = "Health";
+                descriptions.Description = "Adds to your total health.";
+                return descriptions;
             }
             case StatType.mana:
             {
-                return Tuple.Create("Mana", "Magical energy for casting spells"); ;
+                descriptions.Name = "Mana";
+                descriptions.Description = "Magical energy for casting spells";
+                return descriptions;
             }
             case StatType.defence:
             {
-                return Tuple.Create("Defence", "Resist incoming damage."); ;
+                descriptions.Name = "Defence";
+                descriptions.Description = "Resist incoming damage";
+                return descriptions;
             }
             case StatType.spellDamage:
             {
-                return Tuple.Create("Spell Damage", "Potency of magical or spell-based attacks"); ;
+                descriptions.Name = "Spell Damage";
+                descriptions.Description = "Potency of magical or spell-based attacks";
+                return descriptions;
             }
             case StatType.cooldownReduction:
             {
-                return Tuple.Create("Cooldown Reduction", "Reduction in cooldown periods for abilities."); ;
+                descriptions.Name = "Cooldown Reduction";
+                descriptions.Description = "Reduction in cooldown periods for abilities.";
+                return descriptions;
             }
         }
-        return null;
+        return descriptions;
     }
 }
