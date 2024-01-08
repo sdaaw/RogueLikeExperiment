@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Stat
+public class ItemStat
 {
     public enum StatType
     {
@@ -32,9 +32,11 @@ public class Stat
 
     //this feels ugly, unless you want to load items from a seperate asset(json or sql or w/e), I dont know how else to implement this.
 
-    public static Stat CreateStat(Random random)
+    //this is also ONLY used for Items, not for living entities, so maybe rename this to ItemStat, idk. :D
+
+    public static ItemStat CreateStat(Random random)
     {
-        Stat stat = new Stat();
+        ItemStat stat = new ItemStat();
         StatType[] types = (StatType[])Enum.GetValues(typeof(StatType));
         int roll = random.Next(1, types.Length);
         stat.Type = types[roll];
